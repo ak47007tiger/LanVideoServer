@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans    
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd    
+    http://www.springframework.org/schema/tx    
+    http://www.springframework.org/schema/tx/spring-tx-4.0.xsd   
+    http://www.springframework.org/schema/context   
+    http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+    http://www.springframework.org/schema/mvc   
+    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+    <!-- Spring MVC配置 -->
+    <context:annotation-config />
+    <!--扫描注解 -->
+    <context:component-scan base-package="/" />
+    <!--默认的mvc注解映射的支持 -->
+    <mvc:annotation-driven/>
+    <!-- 支持异步方法执行 -->
+    <task:annotation-driven /> 
+    <!-- 视图解析器和json解析器 -->
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <!-- <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html"/>
+                <entry key="json" value="application/json"/>
+            </map>
+        </property>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+                    <property name="prefix" value="/WEB-INF/jsp/" /> 
+                    <property name="suffix" value=".jsp"/>
+                </bean>
+            </list>
+        </property> -->
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 文件上传解析器 -->
+<!--     <bean id="multipartResolver"
+        class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        one of the properties available; the maximum file size in bytes
+        <property name="maxUploadSize" value="-1"/>
+    </bean> -->
+
+    <!-- 总错误处理 -->
+<!--     <bean id="exceptionResolver"
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="defaultErrorView">
+            <value>/error</value>
+        </property>
+        <property name="defaultStatusCode">
+            <value>500</value>
+        </property>
+        <property name="warnLogCategory">
+            <value>org.springframework.web.servlet.handler.SimpleMappingExceptionResolver
+            </value>
+        </property>
+    </bean> -->
+
+    <!-- 对静态资源文件的访问 -->
+    <mvc:resources mapping="/images/**" location="/images/" cache-period="31556926" />
+    <mvc:resources mapping="/js/**" location="/js/" cache-period="31556926" />
+    <mvc:resources mapping="/css/**" location="/css/" cache-period="31556926" />
+    <mvc:resources location="/" mapping="/**"/>
+
+
+    <!-- 数据库和事务配置 -->
+
+    <!-- 加载配置文件 -->
+    <!-- <context:property-placeholder location="classpath:jdbc.properties" /> -->
+    <!-- 定义数据源 -->
+<!--     <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+        destroy-method="close">
+        <property name="driverClass">
+            <value>${jdbc.driverClass}</value>
+        </property>
+        <property name="jdbcUrl">
+            <value>${jdbc.url}</value>
+        </property>
+        <property name="user">
+            <value>${jdbc.username}</value>
+        </property>
+        <property name="password">
+            <value>${jdbc.password}</value>
+        </property>
+        连接池中保留的最小连接数。
+        <property name="minPoolSize">
+            <value>${c3p0.minPoolSize}</value>
+        </property>
+        连接池中保留的最大连接数。Default: 15
+        <property name="maxPoolSize">
+            <value>${c3p0.maxPoolSize}</value>
+        </property>
+        初始化时获取的连接数，取值应在minPoolSize与maxPoolSize之间。Default: 3
+        <property name="initialPoolSize">
+            <value>${c3p0.initialPoolSize}</value>
+        </property>
+        每30秒检查所有连接池中的空闲连接。Default: 0
+        <property name="idleConnectionTestPeriod">
+            <value>${c3p0.idleConnectionTestPeriod}</value>
+        </property>
+    </bean> -->
+    <!-- weblogic推荐使用jndi连接池 -->
+    <!-- 
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"> 
+        <property name="jndiName"> 
+            <value>java:comp/env/jdbc/myDatasource</value> 
+        </property> 
+    </bean> 
+    -->
+
+    <!-- 定义jdbcTemplate -->
+<!--     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource">
+            <ref bean="dataSource"/>
+        </property>
+    </bean>
+    <bean id="namedParameterJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg><ref bean="dataSource"/></constructor-arg> 
+    </bean> -->
+
+    <!-- 定义事务管理器 -->
+<!--     <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref bean="dataSource" />
+        </property>
+    </bean> -->
+
+    <!-- 配置事务特性 ，配置add、delete和update开始的方法，事务传播特性为required -->
+<!--     <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED" />
+            <tx:method name="insert*" propagation="REQUIRED" />
+            <tx:method name="delete*" propagation="REQUIRED" />
+            <tx:method name="update*" propagation="REQUIRED" />
+            <tx:method name="login*" propagation="REQUIRED" />
+            <tx:method name="regist*" propagation="REQUIRED" />
+            <tx:method name="*" read-only="true" />
+        </tx:attributes>
+    </tx:advice> -->
+
+    <!-- 配置那些类的方法进行事务管理 -->
+<!--     <aop:config>
+        <aop:pointcut id="allManagerMethod" expression="execution (* com.tf.*.service.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="allManagerMethod" />
+    </aop:config> -->
+</beans>
