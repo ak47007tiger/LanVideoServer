@@ -9,6 +9,7 @@ var fileListController = {
 	},
 	list : function() {
 		var dir = encodeURI(fileListController.dir);
+		console.log("list is run------------------");
 		/*$.ajax({
 				url : fileListController.host + dir,
 				dataType: 'json',

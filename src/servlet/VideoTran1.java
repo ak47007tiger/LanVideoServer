@@ -37,9 +37,12 @@ public class VideoTran1 extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		File file = new File(request.getParameter("path"));
+		String path = request.getParameter("path");
+		if(null == path){
+			path = "E:/FFOutput/Survival Shooter Tutorial - 1 of 10 .mp4";
+		}
+		File file = new File(path);
 		String suffix = file.getName().substring(file.getName().lastIndexOf('.') + 1);
-		
 		String rang = request.getHeader("range");
 		if(null == rang){
 			response.getOutputStream().write("no rang".getBytes());
